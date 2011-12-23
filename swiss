@@ -7,8 +7,8 @@ require 'thor'
 require 'configuration'
 
 require 'lib/project_initializer_initialize'
-require 'lib/project_initializer_export'
 require 'lib/project_initializer_import'
+require 'lib/project_initializer_export'
 
 # This method is included in the Rails Env., so we have to define it here...
 class String
@@ -20,7 +20,7 @@ end
 
 class Swiss < Thor
 
-	desc "configure", "Check configuration"
+	desc "configure", "Check the configuration"
 	def configure
 		if !File.exists?("config.rb")
 			print "** Hey!  It looks like this is your first time running swiss.\n"
@@ -30,18 +30,22 @@ class Swiss < Thor
 			c = Configuration.for 'swiss'
 
 			print "\n"
-			print "-------------------\n"
+			print "---\n"
+			print "*\n"
 			print "* Welcome to swiss!\n"
+			print "*\n"
+			print "* - A project management system in a directory."
 			print "\n\n"
 			help
 		end
 	end
 
-	desc "initialize", "Initialize a project"
-	def init
+	desc "add", "Add a new project"
+	method_options :type => :string
+	def add(project_name)
 		init = ProjectInitializer::Initialize.new
-		project_path = init.initialize_project "commandline", "wordpress"
-		project_path = File.join(`pwd`.strip, project_path)
+		project_path = init.initialize_project project_name, type
+		project_path = File.expand_path(project_path)
 
 		print "\n"
 		print "*** Project successfully initialized at: " + project_path + "\n"
@@ -49,7 +53,7 @@ class Swiss < Thor
 		`echo #{project_path} | pbcopy`
 	end
 
-	desc "export", "Export a project"
+	desc "export [PROJECT_NAME]", "Export a project"
 	def export(project_name)
 		export = ProjectInitializer::Export.new
 		project_path = export.export_wordpress_project project_name, "new_host", "new_mysql_db", "new_mysql_user", "new_mysql_pass", "new_db_host"
@@ -67,7 +71,7 @@ class Swiss < Thor
 		files.each { |f| print "** zips/" + File.basename(f) + "\n" }
 	end
 
-	desc "import PROJECT_NAME", "Import a project"
+	desc "import [PROJECT_NAME]", "Import a project"
 	method_options :zipfile => :string
 	def import(project_name)
 	    import = ProjectInitializer::Import.new
@@ -76,10 +80,21 @@ class Swiss < Thor
 
 	desc "list", "List available projects"
 	def list
-		projects = Dir.glob('repos/wordpress/*')
-		projects.each { |p| print "- #{File.basename(p)}\n" }
+		types = Dir.glob('repos/*')
+
+		types.each do |type|
+			print "\n"
+			print "* #{File.basename(type).capitalize} Projects\n\n"
+
+			projects = Dir.glob(File.join(type, '*'))
+			projects.each { |p| print "- #{File.basename(p)}\n" }
+		end
 	end
 
+	desc "update", "Update the deployment scripts for all projects"
+	def update
+
+	end
 end
 
 Swiss.default_task("configure")
