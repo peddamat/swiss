@@ -1,11 +1,11 @@
-module ProjectInitializer
+module SwissLib
 
   class Initialize
 
     require 'fileutils'
     require 'date'
-    require 'project_initializer_setup'
-    require 'project_initializer_database'
+    require 'setup'
+    require 'database'
 
     def initialize
     end

@@ -1,4 +1,4 @@
-module ProjectInitializer
+module SwissLib
 
   class Import
 

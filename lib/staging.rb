@@ -1,10 +1,10 @@
-module ProjectInitializer
+module SwissLib
 
   class Staging
 
     require 'fileutils'
-    require 'project_initializer_setup'
-    require 'project_initializer_database'
+    require 'setup'
+    require 'database'
 
     def initialize(project_name, project_type="wordpress")
       initialize_project_vars(project_type, project_name)

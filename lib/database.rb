@@ -1,9 +1,9 @@
-module ProjectInitializer
+module SwissLib
 
   class Database
 
     require 'fileutils'
-    require 'project_initializer_setup'
+    require 'setup'
 
     def initialize(project_type, project_name, temp = false)
       initialize_project_vars(project_type, project_name)

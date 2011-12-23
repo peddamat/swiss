@@ -1,10 +1,10 @@
-module ProjectInitializer
+module SwissLib
 
   class Export
 
     require 'fileutils'
-    require 'project_initializer_setup'
-    require 'project_initializer_database'
+    require 'setup'
+    require 'database'
 
     def export_wordpress_project(project_name, new_host, new_mysql_db, new_mysql_user, new_mysql_pass, new_db_host)
 
