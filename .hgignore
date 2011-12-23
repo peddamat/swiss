@@ -1,0 +1,10 @@
+syntax: regexp
+
+(?i)^repos/*
+(?i)^zips/*
+
+syntax: glob
+
+*phplog.txt*
+*DS_Store*
+*.swp
