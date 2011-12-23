@@ -12,7 +12,7 @@ module SwissLib
 
     def update_staging
       # Reload the database from the repository
-      woo = ProjectInitializer::Database.new @project_type, @project_name
+      woo = SwissLib::Database.new @project_type, @project_name
       woo.reload_database
 
       # Update hostnames

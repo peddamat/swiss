@@ -58,7 +58,7 @@ module SwissLib
       siteurl = siteurl[0]
 
       # Import production database
-      woo = ProjectInitializer::Database.new "wordpress", project_name
+      woo = SwissLib::Database.new "wordpress", project_name
       woo.import_database(siteurl)
 
       # Update wp-config.php
