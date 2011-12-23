@@ -8,7 +8,7 @@ module SwissLib
 
     def export_project(new_host, new_mysql_db, new_mysql_user, new_mysql_pass, new_db_host)
 
-      woo = SwissLib::Database.new(@project_type, @project_name)
+      woo = SwissLib::Database.new(@settings)
 
       # Make sure they didn't forget the 'http://'
       new_host = "http://" + new_host unless new_host.starts_with? 'http://'
@@ -31,7 +31,8 @@ module SwissLib
       # TODO: Commit the live database to the repo
 
       # Create temporary database
-      woo = SwissLib::Database.new("wordpress", "#{@project_name}_temp", true)
+      @settings['project_name'] = "#{@project_name}_temp"
+      woo = SwissLib::Database.new(@settings, true)
       woo.initialize_database
       woo.reload_database
 

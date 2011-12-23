@@ -8,11 +8,16 @@ module SwissLib
 
     require 'setup'
 
-    def initialize(project_name, project_type, settings)
+    def initialize(settings)
+      load_settings settings
+      load_subtasks @project_type
+    end
+
+    private
+
+    def load_subtasks(project_type)
       project_tasks = File.join(project_type, 'export.rb')
       require project_tasks
-
-      load_settings project_type, project_name
     end
   end
 end
