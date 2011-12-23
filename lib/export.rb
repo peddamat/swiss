@@ -12,7 +12,7 @@ module SwissLib
       project_tasks = File.join(project_type, 'export.rb')
       require project_tasks
 
-      setup project_type, project_name
+      load_settings project_type, project_name
     end
   end
 end

@@ -1,4 +1,4 @@
-def setup(project_type, project_name)
+def load_settings(project_type, project_name)
     # We've got a ton of Settings, so instead of setting each instance variable
     #  manually, let's iterate through the hash and set them.  For a description
     #  of each variable, see init.rb.

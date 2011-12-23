@@ -5,21 +5,18 @@ module SwissLib
     require 'setup'
 
     def initialize(project_name, project_type, settings)
-      project_tasks = File.join(project_type, 'initialize.rb')
-      require project_tasks
+      # Add a timestamp so the name is 'unique'
+      project_name = append_timestamp project_name
 
-      date = DateTime.now.strftime("%H%M%S")
-      project_name = get_project_directory(project_name, date)
-
-      setup project_type, project_name
+      load_subtasks project_type
+      load_settings project_type, project_name
     end
 
-    def initialize_project(project_name, project_type)
-
+    def initialize_project
       copy_project_template
       copy_mercurial_hooks
       update_eclipse_files
-      custom
+      custom_initialize
       commit_updates
       deploy_project
 
@@ -28,19 +25,28 @@ module SwissLib
 
     private
 
+    def load_subtasks(project_type)
+      subtasks = File.join(project_type, 'initialize.rb')
+      require subtasks
+    end
+
     def copy_project_template
-      FileUtils.makedirs(File.join(@project_path, @project_type)) unless File.exists?(File.join(@project_path, @project_type))
+      FileUtils.makedirs @project_path unless File.exists? @project_path
+      # TODO: Throw exception if we can't find a base project
       FileUtils.cp_r(File.join(@project_base_path, @project_type, '.'), @project_path)
     end
 
     def copy_mercurial_hooks
-      hgrc_path = File.join(@hooks_path, "hgrc")
-      FileUtils.cp_r(hgrc_path, File.join(@project_path, '.hg'))
+      hgrc_from = File.join(@hooks_path, "hgrc")
+      hgrc_to   = File.join(@project_path, '.hg')
 
-      hooks_path = File.join(@hooks_path, "update_staging.sh")
-      hooks_dest = File.join(@project_path, '.hg', 'hooks')
-      Dir.mkdir(hooks_dest)
-      FileUtils.cp_r(hooks_path, hooks_dest)
+      FileUtils.cp_r(hgrc_from, hgrc_to)
+
+      hooks_from = File.join(@hooks_path, "update_staging.sh")
+      hooks_to   = File.join(@project_path, '.hg', 'hooks')
+
+      FileUtils.makedirs hooks_to unless File.exists? hooks_to
+      FileUtils.cp_r(hooks_from, hooks_to)
     end
 
     def update_eclipse_files
@@ -65,11 +71,15 @@ module SwissLib
     # TODO: Clean this up, this code is replicated in project_initializer_staging.rb
     def deploy_project
       # Copy project from repository to web server directory
-      FileUtils.rm_rf "#{@web_dir}/#{@project_name}"
-      FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_dir}/#{@project_name}")
+      FileUtils.rm_rf "#{@web_path}/#{@project_name}"
+      FileUtils.makedirs "#{@web_path}/#{@project_name}" unless File.exists? "#{@web_path}/#{@project_name}"
+      FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_path}/#{@project_name}")
     end
 
-    def get_project_directory(project_name, date)
+    def append_timestamp(project_name)
+      require 'date'
+
+      date = DateTime.now.strftime("%H%M%S")
       sprintf('%s_%s', project_name, date).strip.downcase.gsub(' ','_')
     end
   end

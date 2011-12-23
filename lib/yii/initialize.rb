@@ -2,7 +2,7 @@ module SwissLib
 
   class Initialize
 
-    def custom
+    def custom_initialize
       update_yii_files
     end
 

@@ -26,8 +26,8 @@ module SwissLib
       FileUtils.rm_rf "#{@project_path}/db/tmp"
 
       # Copy project from repository to web server directory
-      FileUtils.rm_rf "#{@web_dir}/#{@project_name}"
-      FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_dir}/#{@project_name}")
+      FileUtils.rm_rf "#{@web_path}/#{@project_name}"
+      FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_path}/#{@project_name}")
     end
 
     def update_staging_from(project_path)

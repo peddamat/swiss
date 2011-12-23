@@ -44,11 +44,16 @@ class Swiss < Thor
 	method_options :type => :string
 	def add(project_name)
 		init = SwissLib::Initialize.new project_name, options[:type], ""
-		project_path = init.initialize_project project_name, options[:type]
+		project_path = init.initialize_project
 		project_path = File.expand_path(project_path)
+		new_project_name = File.basename project_path
 
 		print "\n"
-		print "*** Project successfully initialized at: " + project_path + "\n"
+		print "*** Project #{project_name} initialized!\n"
+		print "**  Name       : #{new_project_name}\n"
+		print "**  Local URL  : #{File.join "http://localhost", new_project_name}\n"
+		print "**  Staging URL: #{File.join "http://staging.talentgurus.net", new_project_name}\n"
+		print "**  System Path: #{project_path}\n"
 		print "**  Path copied to clipboard.\n\n"
 		`echo #{project_path} | pbcopy`
 	end
@@ -74,8 +79,8 @@ class Swiss < Thor
 	desc "import [PROJECT_NAME]", "Import a project"
 	method_options :zipfile => :string
 	def import(project_name)
-	    import = SwissLib::Import.new
-	    import.import_project_from_zip project_name, options[:zipfile]
+	    import = SwissLib::Import.new project_name, "wordpress", ""
+	    import.import_project_from_zip options[:zipfile]
 	end
 
 	desc "list", "List available projects"

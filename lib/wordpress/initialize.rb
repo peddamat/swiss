@@ -6,7 +6,7 @@ module SwissLib
     require 'date'
     require 'database'
 
-    def custom
+    def custom_initialize
       update_wordpress_files
       load_wordpress_database
     end

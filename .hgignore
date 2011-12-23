@@ -2,6 +2,7 @@ syntax: regexp
 
 (?i)^repos/*
 (?i)^zips/*
+(?i)^www/*
 
 syntax: glob
 

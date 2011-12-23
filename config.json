@@ -1,12 +1,17 @@
 {
-	"staging_url": "http://staging.talentgurus.net",
-	"repository_path": "repos",
-	"db_root_pass": "",
-	"project_base_path": "/Users/me/Coding/Projects-PHP/redmine_project-init",
 	"hgweb_url": "http://hg.talentgurus.net",
-	"web_dir": "/var/www",
+	"staging_url": "http://staging.talentgurus.net",
+
+	"hooks_path": "hooks",
+	"repository_path": "repos",
+	"project_base_path": "base",
+	"web_path": "/var/www",
 	"tmp_path": "/var/tmp/redmine",
 	"dev_host": "localhost",
+
 	"db_root_user": "root",
-	"hooks_path": "hooks"
+	"db_root_pass": "",
+	"db_host": "localhost",
+
+  "verbose": "true"
 }

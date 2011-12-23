@@ -19,15 +19,16 @@ module SwissLib
       end
       Dir.mkdir(@TMP_PROJECT_PATH)
 
+      # TODO: If we're cloning the directory, new plugins, etc... won't be copied!
+      #       We should prolly commit before the clone to catch and changes on production.
+
       # Clone project trunk to temporary project directory
       `cd #{@project_path} && hg clone . #{@TMP_PROJECT_PATH} -q`
 
-      # TODO: REMOVE THIS AFTER YOU FIX THE PUSH TO STAGING BUG
-      # woo.initialize_database @TMP_PROJECT_PATH, "#{@project_name}"
-      # woo.reload_database @TMP_PROJECT_PATH, "#{@project_name}"
-
       # Save live database to db directory
       woo.dump_database
+
+      # TODO: Commit the live database to the repo
 
       # Create temporary database
       woo = SwissLib::Database.new("wordpress", "#{@project_name}_temp", true)
