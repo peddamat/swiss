@@ -6,7 +6,7 @@ module SwissLib
     require 'setup'
 
     def initialize(project_type, project_name, temp = false)
-      initialize_project_vars(project_type, project_name)
+      setup(project_type, project_name)
 
       if temp == true
         @project_path = File.join(@tmp_path, project_name)

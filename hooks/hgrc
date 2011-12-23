@@ -1,0 +1,2 @@
+[hooks]
+changegroup=.hg/hooks/update_staging.sh

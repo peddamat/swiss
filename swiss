@@ -43,7 +43,7 @@ class Swiss < Thor
 	desc "add", "Add a new project"
 	method_options :type => :string
 	def add(project_name)
-		init = SwissLib::Initialize.new
+		init = SwissLib::Initialize.new project_name, options[:type], ""
 		project_path = init.initialize_project project_name, options[:type]
 		project_path = File.expand_path(project_path)
 

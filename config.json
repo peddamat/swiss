@@ -7,5 +7,6 @@
 	"web_dir": "/var/www",
 	"tmp_path": "/var/tmp/redmine",
 	"dev_host": "localhost",
-	"db_root_user": "root"
+	"db_root_user": "root",
+	"hooks_path": "hooks"
 }
