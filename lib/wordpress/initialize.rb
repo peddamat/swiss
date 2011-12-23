@@ -28,7 +28,9 @@ module SwissLib
     end
 
     def load_wordpress_database
-      woo = SwissLib::Database.new "wordpress", @project_name
+      @settings['project_name'] = @project_name
+      @settings['project_type'] = "wordpress"
+      woo = SwissLib::Database.new @settings
 
       woo.import_database("http://localhost/wordpress")
     end

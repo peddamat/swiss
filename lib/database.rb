@@ -5,12 +5,12 @@ module SwissLib
     require 'fileutils'
     require 'setup'
 
-    def initialize(project_type, project_name, temp = false)
-      load_subtasks project_type
-      load_settings project_type, project_name
+    def initialize(settings, temp = false)
+      load_settings settings
+      load_subtasks @project_type
 
       if temp == true
-        @project_path = File.join(@tmp_path, project_name)
+        @project_path = File.join(@tmp_path, @project_name)
       end
 
       @MYSQL_BIN     = "#{@mysql_path}/mysql -u#{@db_root_user} --password=#{@db_root_pass} -h #{@db_host}"

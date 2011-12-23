@@ -10,6 +10,8 @@ require 'lib/initialize'
 require 'lib/import'
 require 'lib/export'
 
+require 'ruby-debug'
+
 # This method is included in the Rails Env., so we have to define it here...
 class String
 	def starts_with?(prefix)
@@ -19,6 +21,28 @@ class String
 end
 
 class Swiss < Thor
+
+	no_tasks do
+		def load_config(project_name, project_type)
+		    require 'rubygems'
+		    require 'json'
+
+		    file = File.open('config.json', 'r')
+		    json = file.readlines.to_s
+
+		    @settings = JSON.parse(json)
+
+		    @settings['project_name'] = append_timestamp project_name
+		    @settings['project_type'] = project_type
+		end
+
+	    def append_timestamp(project_name)
+	      require 'date'
+
+	      date = DateTime.now.strftime("%H%M%S")
+	      sprintf('%s_%s', project_name, date).strip.downcase.gsub(' ','_')
+	    end
+	end
 
 	desc "configure", "Check the configuration"
 	def configure
@@ -43,7 +67,9 @@ class Swiss < Thor
 	desc "add", "Add a new project"
 	method_options :type => :string
 	def add(project_name)
-		init = SwissLib::Initialize.new project_name, options[:type], ""
+		load_config project_name, options[:type]
+
+		init = SwissLib::Initialize.new @settings
 		project_path = init.initialize_project
 		project_path = File.expand_path(project_path)
 		new_project_name = File.basename project_path

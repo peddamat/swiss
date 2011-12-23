@@ -4,12 +4,9 @@ module SwissLib
 
     require 'setup'
 
-    def initialize(project_name, project_type, settings)
-      # Add a timestamp so the name is 'unique'
-      project_name = append_timestamp project_name
-
-      load_subtasks project_type
-      load_settings project_type, project_name
+    def initialize(settings)
+      load_settings settings
+      load_subtasks @project_type
     end
 
     def initialize_project
@@ -74,13 +71,6 @@ module SwissLib
       FileUtils.rm_rf "#{@web_path}/#{@project_name}"
       FileUtils.makedirs "#{@web_path}/#{@project_name}" unless File.exists? "#{@web_path}/#{@project_name}"
       FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_path}/#{@project_name}")
-    end
-
-    def append_timestamp(project_name)
-      require 'date'
-
-      date = DateTime.now.strftime("%H%M%S")
-      sprintf('%s_%s', project_name, date).strip.downcase.gsub(' ','_')
     end
   end
 end
