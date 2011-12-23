@@ -107,7 +107,7 @@ module SwissLib
     end
 
     def load_wordpress_database
-      woo = ProjectInitializer::Database.new "wordpress", @project_name
+      woo = SwissLib::Database.new "wordpress", @project_name
 
       woo.import_database("http://localhost/wordpress")
     end
