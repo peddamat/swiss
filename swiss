@@ -73,8 +73,8 @@ class Swiss < Thor
 		end
 	end
 
-	desc "add", "Add a new project"
-	method_options :type => :string
+	desc "add [PROJECT_NAME]", "Add a new project"
+	method_option :type, :aliases => "-t", :required => true, :desc => "The type of project to add"
 	def add(project_name)
 		load_config project_name, options[:type]
 
@@ -116,10 +116,10 @@ class Swiss < Thor
 	end
 
 	desc "import [PROJECT_NAME]", "Import a project"
-	method_options :zipfile => :string
+	method_option :file, :aliases => "-f", :required => true, :desc => "Project archive"
 	def import(project_name)
 	    import = SwissLib::Import.new project_name, "wordpress", ""
-	    import.import_project_from_zip options[:zipfile]
+	    import.import_project_from_zip options[:file]
 	end
 
 	desc "list", "List available projects"
