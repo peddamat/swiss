@@ -1,7 +1,7 @@
 module SwissLib
 
 	class Database
-		def prep_for_dump(url_from, url_to)
+		def hook_pre_dump(url_from, url_to)
 			# TODO: When importing a project, we should grep through the database.sql file
 			#  and determine which rows need updating, instead of hardcoding just a few tables
 
@@ -12,7 +12,7 @@ module SwissLib
 			update_hostname  :url_from => url_from, :url_to => url_to
 		end
 
-		def prep_for_staging(url_from, url_to)
+		def hook_pre_staging(url_from, url_to)
 			update_hostname  :url_from => url_from, :url_to => url_to
 		end
 

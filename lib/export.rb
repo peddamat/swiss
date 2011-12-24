@@ -2,15 +2,16 @@ module SwissLib
 
   class Export
 
-    require 'fileutils'
     require 'setup'
     require 'database'
-
-    require 'setup'
 
     def initialize(settings)
       load_settings settings
       load_subtasks @project_type
+    end
+
+    def export_project(new_host, new_mysql_db, new_mysql_user, new_mysql_pass, new_db_host)
+      hook_export_project(new_host, new_mysql_db, new_mysql_user, new_mysql_pass, new_db_host)
     end
 
     private

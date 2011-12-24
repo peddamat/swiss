@@ -1,8 +1,8 @@
 def load_settings(settings)
+
     # We've got a ton of Settings, so instead of setting each instance variable
     #  manually, let's iterate through the hash and set them.  For a description
     #  of each variable, see init.rb.
-
     settings.each { |key, value|
         if key.include? "_path"
             value = File.expand_path value

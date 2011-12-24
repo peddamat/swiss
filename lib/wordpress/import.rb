@@ -2,7 +2,7 @@ module SwissLib
 
   class Import
 
-    def prep_project(update_wpconfig)
+    def hook_import_project(update_wpconfig)
 
       # Search for the wp-config.php in the extracted zip file
       path = File.join(@tmp_path, @filebase, '**', 'wp-config.php')

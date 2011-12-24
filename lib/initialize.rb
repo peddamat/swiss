@@ -13,7 +13,9 @@ module SwissLib
       copy_project_template
       copy_mercurial_hooks
       update_eclipse_files
-      custom_initialize
+
+      hook_initialize
+
       commit_updates
       deploy_project
 

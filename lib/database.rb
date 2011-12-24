@@ -21,14 +21,14 @@ module SwissLib
       initialize_database
       reload_database
 
-      prep_for_dump   url_from, "http://localhost/#{@project_name}"
+      hook_pre_dump   url_from, "http://localhost/#{@project_name}"
       update_database url_from, "http://localhost/#{@project_name}"
 
       # Dump the updated database to database.sql
       dump_database
 
       # Now, initialize the database for the staging server
-      prep_for_staging "http://localhost/#{@project_name}", "#{@staging_url}/#{@project_name}"
+      hook_pre_staging "http://localhost/#{@project_name}", "#{@staging_url}/#{@project_name}"
       update_database  "http://localhost/#{@project_name}", "#{@staging_url}/#{@project_name}"
 
       # Clean-up

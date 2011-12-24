@@ -19,7 +19,7 @@ module SwissLib
       # Cleanup
       # File.delete(zip_file)
 
-      siteurl = prep_project update_wpconfig
+      siteurl = hook_import_project update_wpconfig
 
       deploy_project @project_name
       commit_updates siteurl

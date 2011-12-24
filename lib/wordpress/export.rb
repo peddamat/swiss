@@ -6,7 +6,7 @@ module SwissLib
     require 'setup'
     require 'database'
 
-    def export_project(new_host, new_mysql_db, new_mysql_user, new_mysql_pass, new_db_host)
+    def hook_export_project(new_host, new_mysql_db, new_mysql_user, new_mysql_pass, new_db_host)
 
       woo = SwissLib::Database.new(@settings)
 
