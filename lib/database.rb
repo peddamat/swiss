@@ -12,9 +12,6 @@ module SwissLib
       if temp == true
         @project_path = File.join(@tmp_path, @project_name)
       end
-
-      @MYSQL_BIN     = "#{@mysql_path}/mysql -u#{@db_root_user} --password=#{@db_root_pass} -h #{@db_host}"
-      @MYSQLDUMP_BIN = "#{@mysql_path}/mysqldump --skip-comments --extended-insert --complete-insert --skip-comments -u#{@db_root_user} --password=#{@db_root_pass} -h #{@db_host}"
     end
 
     def import_database(url_from)
@@ -42,7 +39,7 @@ module SwissLib
       scripts_prep(project_path, project_name, "", "")
 
       print "* Initializing database...\n" unless @verbose.nil?
-      `#{@MYSQL_BIN} < #{project_path}/db/tmp/001_init_database.sql 2>/dev/null`
+      `#{@mysql_bin} < #{project_path}/db/tmp/001_init_database.sql 2>/dev/null`
     end
 
     def reload_database(hsh = {})
@@ -52,8 +49,8 @@ module SwissLib
       scripts_prep(project_path, project_name, "", "")
 
       print "* Reloading database...\n" unless @verbose.nil?
-      `#{@MYSQL_BIN} < #{project_path}/db/tmp/002_reload_database.sql`
-      `#{@MYSQL_BIN} #{@db_name} < #{project_path}/db/database.sql`
+      `#{@mysql_bin} < #{project_path}/db/tmp/002_reload_database.sql`
+      `#{@mysql_bin} #{@db_name} < #{project_path}/db/database.sql`
     end
 
     def dump_database(hsh = {})
@@ -61,7 +58,7 @@ module SwissLib
       project_path = hsh[:project_path] || @project_path
 
       print "* Dumping database to database.sql...\n" unless @verbose.nil?
-      `#{@MYSQLDUMP_BIN} #{db_name} > #{project_path}/db/database.sql`
+      `#{@mysqldump_bin} #{db_name} > #{project_path}/db/database.sql`
     end
 
     def update_database(local_project_url, prod_project_url)
@@ -69,7 +66,7 @@ module SwissLib
 
       print "* Updating hostnames:\n" unless @verbose.nil?
       print "* - #{local_project_url} -> #{prod_project_url}\n" unless @verbose.nil?
-      `#{@MYSQL_BIN} #{@db_name} < #{File.join(@project_path, "db", "tmp", '003_update_hostname.sql')}`
+      `#{@mysql_bin} #{@db_name} < #{File.join(@project_path, "db", "tmp", '003_update_hostname.sql')}`
     end
 
     private
