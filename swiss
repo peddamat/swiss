@@ -120,7 +120,9 @@ class Swiss < Thor
 	desc "import [PROJECT_NAME]", "Import a project"
 	method_option :file, :aliases => "-f", :required => true, :desc => "Project archive"
 	def import(project_name)
-		import = SwissLib::Import.new project_name, "wordpress", ""
+		load_config project_name, get_project_type(project_name)
+
+		import = SwissLib::Import.new @settings
 		import.import_project_from_zip options[:file]
 	end
 

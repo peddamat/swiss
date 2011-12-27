@@ -4,9 +4,9 @@ module SwissLib
 
     require 'fileutils'
 
-    def initialize(project_name, project_type, settings)
-      load_subtasks project_type
-      load_settings project_type, project_name
+    def initialize(settings)
+      load_settings settings
+      load_subtasks @project_type
     end
 
     def import_project_from_zip(zip_file, update_wpconfig = "true")
