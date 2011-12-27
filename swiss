@@ -6,19 +6,53 @@ require 'rubygems'
 require 'thor'
 require 'configuration'
 
-require 'lib/project_initializer_initialize'
-require 'lib/project_initializer_import'
-require 'lib/project_initializer_export'
+require 'lib/initialize'
+require 'lib/import'
+require 'lib/export'
+require 'lib/staging'
+
+require 'ruby-debug'
 
 # This method is included in the Rails Env., so we have to define it here...
 class String
 	def starts_with?(prefix)
-	  prefix = prefix.to_s
-	  self[0, prefix.length] == prefix
+		prefix = prefix.to_s
+		self[0, prefix.length] == prefix
 	end
 end
 
 class Swiss < Thor
+
+	no_tasks do
+		def load_config(project_name, project_type)
+			require 'rubygems'
+			require 'json'
+
+			file = File.open('config.json', 'r')
+			json = file.readlines.to_s
+
+			@settings = JSON.parse(json)
+
+			@settings['project_name'] = project_name
+			@settings['project_type'] = project_type
+		end
+
+		def append_timestamp(project_name)
+			require 'date'
+
+			date = DateTime.now.strftime("%H%M%S")
+			sprintf('%s_%s', project_name, date).strip.downcase.gsub(' ','_')
+		end
+
+		def get_project_type(project_name)
+			match = Dir.glob("repos/**/#{project_name}").first
+			unless match.nil?
+				match.split('/')[1]
+			else
+				throw
+			end
+		end
+	end
 
 	desc "configure", "Check the configuration"
 	def configure
@@ -40,23 +74,32 @@ class Swiss < Thor
 		end
 	end
 
-	desc "add", "Add a new project"
-	method_options :type => :string
+	desc "add [PROJECT_NAME]", "Add a new project"
+	method_option :type, :aliases => "-t", :required => true, :desc => "The type of project to add"
 	def add(project_name)
-		init = ProjectInitializer::Initialize.new
-		project_path = init.initialize_project project_name, type
+		load_config append_timestamp(project_name), options[:type]
+
+		init = SwissLib::Initialize.new @settings
+		project_path = init.initialize_project
 		project_path = File.expand_path(project_path)
+		new_project_name = File.basename project_path
 
 		print "\n"
-		print "*** Project successfully initialized at: " + project_path + "\n"
+		print "*** Project #{project_name} initialized!\n"
+		print "**  Name       : #{new_project_name}\n"
+		print "**  Local URL  : #{File.join "http://localhost", new_project_name}\n"
+		print "**  Staging URL: #{File.join "http://staging.talentgurus.net", new_project_name}\n"
+		print "**  System Path: #{project_path}\n"
 		print "**  Path copied to clipboard.\n\n"
 		`echo #{project_path} | pbcopy`
 	end
 
 	desc "export [PROJECT_NAME]", "Export a project"
 	def export(project_name)
-		export = ProjectInitializer::Export.new
-		project_path = export.export_wordpress_project project_name, "new_host", "new_mysql_db", "new_mysql_user", "new_mysql_pass", "new_db_host"
+		load_config project_name, get_project_type(project_name)
+
+		export = SwissLib::Export.new @settings
+		project_path = export.export_project "new_host", "new_mysql_db", "new_mysql_user", "new_mysql_pass", "new_db_host"
 
 		require 'fileutils'
 
@@ -66,16 +109,21 @@ class Swiss < Thor
 			files << f
 		end
 
+		# Cleanup temporary directory
+		FileUtils.rm_rf(project_path)
+
 		print "\n"
 		print "*** Project successfully exported!\n"
 		files.each { |f| print "** zips/" + File.basename(f) + "\n" }
 	end
 
 	desc "import [PROJECT_NAME]", "Import a project"
-	method_options :zipfile => :string
+	method_option :file, :aliases => "-f", :required => true, :desc => "Project archive"
 	def import(project_name)
-	    import = ProjectInitializer::Import.new
-	    import.import_project_from_zip project_name, options[:zipfile]
+		load_config project_name, get_project_type(project_name)
+
+		import = SwissLib::Import.new @settings
+		import.import_project_from_zip options[:file]
 	end
 
 	desc "list", "List available projects"
@@ -89,6 +137,14 @@ class Swiss < Thor
 			projects = Dir.glob(File.join(type, '*'))
 			projects.each { |p| print "- #{File.basename(p)}\n" }
 		end
+	end
+
+	desc "stage [PROJECT_NAME]", "Deploy a project to staging"
+	def stage(project_name)
+		load_config project_name, get_project_type(project_name)
+
+		woo = SwissLib::Staging.new @settings
+		woo.update_staging
 	end
 
 	desc "update", "Update the deployment scripts for all projects"

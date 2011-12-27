@@ -1,20 +1,8 @@
-module ProjectInitializer
+module SwissLib
 
   class Import
 
-    require 'fileutils'
-
-    def import_project_from_zip(project_name, zip_file, update_wpconfig = "true")
-
-      initialize_project_vars("wordpress", project_name)
-
-      @filebase = File.basename(zip_file, ".zip")
-
-      # Extract zip file to a temporary directory
-      `unzip -f -qq #{zip_file} -d #{File.join(@tmp_path, @filebase)}/`
-
-      # Cleanup
-      # File.delete(zip_file)
+    def hook_import_project(update_wpconfig)
 
       # Search for the wp-config.php in the extracted zip file
       path = File.join(@tmp_path, @filebase, '**', 'wp-config.php')
@@ -58,7 +46,7 @@ module ProjectInitializer
       siteurl = siteurl[0]
 
       # Import production database
-      woo = ProjectInitializer::Database.new "wordpress", project_name
+      woo = SwissLib::Database.new @settings
       woo.import_database(siteurl)
 
       # Update wp-config.php
@@ -71,21 +59,7 @@ module ProjectInitializer
         File.open("#{@project_path}/src/wp-config.php", "w") {|file| file.puts text}
       end
 
-      deploy_project project_name
-      commit_updates siteurl
-    end
-
-    # TODO: Clean this up, this code is replicated in project_initializer_staging.rb
-    def deploy_project(project_name)
-      # Copy project from repository to web server directory
-      FileUtils.rm_rf "#{@web_dir}/#{project_name}"
-      FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_dir}/#{project_name}")
-    end
-
-    # TODO: Clean this up, this code is replicated in project_initializer_initialize.rb
-    def commit_updates(siteurl)
-      # puts `cd #{@project_path} && hg commit -m "Imported site from #{@siteurl}" -u "www-data"`
-      puts `cd #{@project_path} && hg add && hg commit -m "Imported site from #{siteurl}" -u "www-data"`
+      siteurl
     end
   end
 end
