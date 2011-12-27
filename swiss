@@ -9,6 +9,7 @@ require 'configuration'
 require 'lib/initialize'
 require 'lib/import'
 require 'lib/export'
+require 'lib/staging'
 
 require 'ruby-debug'
 
@@ -134,6 +135,14 @@ class Swiss < Thor
 			projects = Dir.glob(File.join(type, '*'))
 			projects.each { |p| print "- #{File.basename(p)}\n" }
 		end
+	end
+
+	desc "stage [PROJECT_NAME]", "Deploy a project to staging"
+	def stage(project_name)
+		load_config project_name, get_project_type(project_name)
+
+		woo = SwissLib::Staging.new @settings
+		woo.update_staging
 	end
 
 	desc "update", "Update the deployment scripts for all projects"

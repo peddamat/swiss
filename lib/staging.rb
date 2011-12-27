@@ -2,23 +2,21 @@ module SwissLib
 
   class Staging
 
-    require 'fileutils'
     require 'setup'
     require 'database'
+    require 'fileutils'
 
-    def initialize(project_name, project_type="wordpress")
-      initialize_project_vars(project_type, project_name)
+    def initialize(settings)
+      load_settings settings
+      load_subtasks @project_type
     end
 
     def update_staging
       # Reload the database from the repository
-      woo = SwissLib::Database.new @project_type, @project_name
+      woo = SwissLib::Database.new @settings
       woo.reload_database
 
-      # Update hostnames
-      if @project_type =~ /wordpress/
-        woo.update_hostname :url_to => @staging_url, :url_from => "http://localhost"
-      end
+      hook_stage_project(woo)
 
       woo.update_database "http://localhost", @staging_url
 
@@ -30,9 +28,11 @@ module SwissLib
       FileUtils.cp_r(File.join(@project_path, 'src', '.'), "#{@web_path}/#{@project_name}")
     end
 
-    def update_staging_from(project_path)
-      @project_path = project_path
-      update_staging
+    private
+
+    def load_subtasks(project_type)
+      project_tasks = File.join(project_type, 'staging.rb')
+      require project_tasks
     end
   end
 end
