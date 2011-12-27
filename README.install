@@ -1,3 +1,6 @@
+Installing ruby-dev
+- sudo apt-get install ruby1.8-dev
+
 Updating rubygems
 - gem install rubygems-update
 - cd /var/lib/gems/1.8/bin

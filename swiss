@@ -85,7 +85,7 @@ class Swiss < Thor
 		new_project_name = File.basename project_path
 
 		print "\n"
-		print "*** Project #{project_name} initialized!\n"
+		print "*** Project \"#{project_name}\" initialized!\n"
 		print "**  Name       : #{new_project_name}\n"
 		print "**  Local URL  : #{File.join "http://localhost", new_project_name}\n"
 		print "**  Staging URL: #{File.join "http://staging.talentgurus.net", new_project_name}\n"
