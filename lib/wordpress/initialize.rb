@@ -37,11 +37,10 @@ module SwissLib
       end
     end
 
+    # Load the initial database, which is installed, by default, to
+    #  http://localhost/wordpress
     def load_wordpress_database
-      # @settings['project_name'] = @project_name
-      # @settings['project_type'] = "wordpress"
       woo = SwissLib::Database.new @settings
-
       woo.import_database("http://localhost/wordpress")
     end
   end

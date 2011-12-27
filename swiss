@@ -15,8 +15,8 @@ require 'ruby-debug'
 # This method is included in the Rails Env., so we have to define it here...
 class String
 	def starts_with?(prefix)
-	  prefix = prefix.to_s
-	  self[0, prefix.length] == prefix
+		prefix = prefix.to_s
+		self[0, prefix.length] == prefix
 	end
 end
 
@@ -24,33 +24,33 @@ class Swiss < Thor
 
 	no_tasks do
 		def load_config(project_name, project_type)
-		    require 'rubygems'
-		    require 'json'
+			require 'rubygems'
+			require 'json'
 
-		    file = File.open('config.json', 'r')
-		    json = file.readlines.to_s
+			file = File.open('config.json', 'r')
+			json = file.readlines.to_s
 
-		    @settings = JSON.parse(json)
+			@settings = JSON.parse(json)
 
-		    @settings['project_name'] = project_name
-		    @settings['project_type'] = project_type
+			@settings['project_name'] = project_name
+			@settings['project_type'] = project_type
 		end
 
-	    def append_timestamp(project_name)
-	      require 'date'
+		def append_timestamp(project_name)
+			require 'date'
 
-	      date = DateTime.now.strftime("%H%M%S")
-	      sprintf('%s_%s', project_name, date).strip.downcase.gsub(' ','_')
-	    end
+			date = DateTime.now.strftime("%H%M%S")
+			sprintf('%s_%s', project_name, date).strip.downcase.gsub(' ','_')
+		end
 
-	    def get_project_type(project_name)
-	    	match = Dir.glob("repos/**/#{project_name}").first
-	    	unless match.nil?
-	    		match.split('/')[1]
-	    	else
-	    		throw
-	    	end
-	    end
+		def get_project_type(project_name)
+			match = Dir.glob("repos/**/#{project_name}").first
+			unless match.nil?
+				match.split('/')[1]
+			else
+				throw
+			end
+		end
 	end
 
 	desc "configure", "Check the configuration"
@@ -108,6 +108,9 @@ class Swiss < Thor
 			files << f
 		end
 
+		# Cleanup temporary directory
+		FileUtils.rm_rf(project_path)
+
 		print "\n"
 		print "*** Project successfully exported!\n"
 		files.each { |f| print "** zips/" + File.basename(f) + "\n" }
@@ -116,8 +119,8 @@ class Swiss < Thor
 	desc "import [PROJECT_NAME]", "Import a project"
 	method_option :file, :aliases => "-f", :required => true, :desc => "Project archive"
 	def import(project_name)
-	    import = SwissLib::Import.new project_name, "wordpress", ""
-	    import.import_project_from_zip options[:file]
+		import = SwissLib::Import.new project_name, "wordpress", ""
+		import.import_project_from_zip options[:file]
 	end
 
 	desc "list", "List available projects"

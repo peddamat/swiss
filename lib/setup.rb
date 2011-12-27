@@ -11,10 +11,6 @@ def load_settings(settings, temp = false)
         instance_variable_set("@#{key}", value)
     }
 
-    # if temp == true
-    #     @project_name = @project_name + "_temp"
-    # end
-
     @db_prefix          = @project_type.strip + "_"
     @db_name            = @db_prefix + @project_name
 
