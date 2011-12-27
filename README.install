@@ -1,0 +1,20 @@
+Updating rubygems
+- gem install rubygems-update
+- cd /var/lib/gems/1.8/bin
+- sudo ./update_rubygems
+
+Install bundler
+- sudo gem install bundle
+
+Install required gems for swiss
+- sudo bundle install
+- apt-get install libjson-ruby
+
+Install mercurial
+- Download source: http://mercurial.selenic.com/release/
+- apt-get install python-dev python-docutils
+- make all && su -c "make install"
+
+Install php5-mysql
+- apt-get install php5-mysql
+
