@@ -10,6 +10,8 @@ module SwissLib
     end
 
     def initialize_project
+      # make_project_directories
+      copy_tooling_files
       copy_project_template
       copy_mercurial_hooks
       update_eclipse_files
@@ -29,16 +31,28 @@ module SwissLib
       require subtasks
     end
 
+    def make_project_directories
+      FileUtils.makedirs File.join(@project_path, 'src') unless File.exists? File.join(@project_path, 'src')
+    end
+
+    def copy_tooling_files
+      `hg clone #{File.join(@base_path, 'tooling', 'eclipse')} -q #{@project_path}`
+    end
+
     def copy_project_template
-      FileUtils.makedirs @project_path unless File.exists? @project_path
-      # TODO: Throw exception if we can't find a base project
-      FileUtils.cp_r(File.join(@project_base_path, @project_type, '.'), @project_path)
+      begin
+        FileUtils.cp_r(File.join(@project_base_path, @project_type, '.'), File.join(@project_path, 'src'))
+      rescue
+        print "Can't find project\n";
+        exit 1
+      end
     end
 
     def copy_mercurial_hooks
       hgrc_from = File.join(@hooks_path, "hgrc")
       hgrc_to   = File.join(@project_path, '.hg')
 
+      FileUtils.makedirs hgrc_to unless File.exists? hgrc_to
       FileUtils.cp_r(hgrc_from, hgrc_to)
 
       hooks_from = File.join(@hooks_path, "update_staging.sh")
@@ -64,6 +78,7 @@ module SwissLib
     end
 
     def commit_updates
+      `cd #{@project_path} && hg add`
       `cd #{@project_path} && hg commit -m "Checking in project-specific settings." -u "www-data"`
     end
 

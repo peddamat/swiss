@@ -7,11 +7,21 @@ module SwissLib
     require 'database'
 
     def hook_initialize
+      copy_wpconfig
+      copy_initial_database
       update_wordpress_files
       load_wordpress_database
     end
 
     private
+
+    def copy_wpconfig
+      FileUtils.copy File.join(@project_path, 'src', 'wp-config-sample.php'), File.join(@project_path, 'src', 'wp-config.php')
+    end
+
+    def copy_initial_database
+      FileUtils.copy File.join(@base_path, 'db', 'wordpress', 'database.sql'), File.join(@project_path, 'db', 'database.sql')
+    end
 
     # TODO: We also need to update the "Authentication Unique Keys and Salts."
     def update_wordpress_files
@@ -28,8 +38,8 @@ module SwissLib
     end
 
     def load_wordpress_database
-      @settings['project_name'] = @project_name
-      @settings['project_type'] = "wordpress"
+      # @settings['project_name'] = @project_name
+      # @settings['project_type'] = "wordpress"
       woo = SwissLib::Database.new @settings
 
       woo.import_database("http://localhost/wordpress")
